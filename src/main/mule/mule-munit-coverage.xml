@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e8e06f91-28cf-4dbb-acdb-28110f59f93b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="mule-munit-coverageFlow" doc:id="33da161c-264e-4c2a-9752-17ad98128f10" >
+		<http:listener doc:name="Listener" doc:id="a83f5747-4f47-4d71-9568-46ae4b3e3973" config-ref="HTTP_Listener_config" path="/greeting"/>
+		<logger level="INFO" doc:name="Start Log" doc:id="3ab088fa-9a84-4a73-9dfd-26e3a09fb5bf" message="Greeting employee flow started." />
+		<ee:transform doc:name="Set Greeting Response" doc:id="d1acc4cd-0e1f-4c9b-aaf5-a23cedd6235f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var firstName = attributes.queryParams.'firstName'
+var lastName = attributes.queryParams.'lastName'
+---
+{
+	"message": "Welcome onboard " ++ firstName ++ " " ++ lastName
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Log" doc:id="cf1c8ee3-6be2-484e-8436-5f3062b899aa" message="Greeting employee flow ended." />
+	</flow>
+</mule>
